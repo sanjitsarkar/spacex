@@ -8,10 +8,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      debugShowCheckedModeBanner: true,
+      debugShowCheckedModeBanner: false,
       title: 'SpaceX',
       initialRoute: AppPages.INITIAL_ROUTE,
       getPages: AppPages.pages,
+      theme: ThemeData(appBarTheme: AppBarTheme(color: Colors.blueGrey)),
     );
   }
 }

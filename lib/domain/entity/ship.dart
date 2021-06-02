@@ -11,7 +11,7 @@ class Ship {
   final String? id;
   final List<Mission>? missions;
   final String? name;
-  final int? yearBuilt;
+  final String? yearBuilt;
   Ship({
     required this.image,
     required this.active,
@@ -29,7 +29,7 @@ class Ship {
     String? id,
     List<Mission>? missions,
     String? name,
-    int? yearBuilt,
+    String? yearBuilt,
   }) {
     return Ship(
       image: image ?? this.image,
@@ -64,7 +64,9 @@ class Ship {
       missions:
           List<Mission>.from(map['missions']?.map((x) => Mission.fromMap(x))),
       name: map['name'],
-      yearBuilt: map['year_built'],
+      yearBuilt: map['year_built'].toString() == "null"
+          ? "N/A"
+          : map['year_built'].toString(),
     );
   }
 

@@ -9,7 +9,7 @@ class SpaceXRepository implements ISpaceXRepository {
   @override
   Future<Data> searchShip(
       {int? limit, int? offset, Map<String, dynamic>? search}) async {
-    final data = await provider.searchShip();
+    final data = await provider.searchShip(limit: limit, offset: offset);
     // print(data.body);
     return data.body!;
   }

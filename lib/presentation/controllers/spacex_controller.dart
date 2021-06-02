@@ -1,20 +1,34 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:spacex/domain/adapters/spacex_adapter.dart';
 import 'package:spacex/domain/entity/data.dart';
+import 'package:spacex/domain/entity/ship.dart';
 
-class SpaceXController extends SuperController<Data> {
+class SpaceXController extends GetxController {
   final ISpaceXRepository repository;
   SpaceXController({required this.repository});
+  RxDouble limit = RxDouble(5);
+  RxString name = RxString("");
+  RxList<Ship> ships = RxList<Ship>.empty();
+  RxInt offset = RxInt(0);
+  Rx<ScrollController> scrollController = ScrollController().obs;
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    append(() => repository.searchShip);
+
     searchShips();
   }
 
   Future searchShips() async {
-    repository.searchShip();
+    // data.value = Data(ships: []);
+    print("called");
+    Data _data = await repository.searchShip(
+        limit: limit.value.toInt(), offset: offset.value);
+    // print(_data.toString());
+    ships.addAll(_data.ships);
+
+    // append((val) => repository.searchShip(limit: 12));
   }
 
   @override

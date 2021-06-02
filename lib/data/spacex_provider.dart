@@ -22,11 +22,12 @@ class SpaceXProvider extends GetConnect implements ISpaceXProvider {
 
   @override
   Future<GraphQLResponse<Data>> searchShip(
-      {int? limit = 30, int? offset, Map<String, dynamic>? search}) async {
+      {int? limit = 5, int? offset, Map<String, dynamic>? search}) async {
+    print(limit);
     final response = await connect.query(
-      r"""
+      """
       {
-  ships(limit: 50) {
+  ships(limit:$limit,offset:$offset) {
     image
     active
     home_port
