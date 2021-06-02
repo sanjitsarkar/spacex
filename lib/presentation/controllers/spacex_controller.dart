@@ -7,7 +7,7 @@ import 'package:spacex/domain/entity/ship.dart';
 class SpaceXController extends GetxController {
   final ISpaceXRepository repository;
   SpaceXController({required this.repository});
-  RxDouble limit = RxDouble(5);
+  RxDouble limit = RxDouble(10);
   RxString name = RxString("");
   RxList<Ship> ships = RxList<Ship>.empty();
   RxInt offset = RxInt(0);

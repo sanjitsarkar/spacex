@@ -10,13 +10,13 @@ import 'package:spacex/shared/constants.dart';
 class SpaceXHomeView extends GetWidget<SpaceXController> {
   @override
   Widget build(BuildContext context) {
-    controller.scrollController.value.addListener(() async{
-      if (controller.scrollController.value.position.pixels ==
-          controller.scrollController.value.position.maxScrollExtent) {
-        controller.offset.value+=5;
-        await controller.searchShips();
-      }
-    });
+    // controller.scrollController.value.addListener(() async {
+    //   if (controller.scrollController.value.position.pixels ==
+    //       controller.scrollController.value.position.maxScrollExtent) {
+    //     controller.offset.value += 5;
+    //     await controller.searchShips();
+    //   }
+    // });
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -148,7 +148,24 @@ class SpaceXHomeView extends GetWidget<SpaceXController> {
                           value: controller.limit.value,
                           onChanged: (double value) async {
                             controller.limit.value = value;
-                            await controller.searchShips();
+                            double limit = controller.limit.value;
+                            int length = controller.ships.length;
+
+                            int offset = controller.offset.value;
+
+                            if (limit < length) {
+                              controller.ships
+                                  .removeRange(limit.toInt(), length);
+                            } else if (limit == length) {
+                              // controller.limit.value = value;
+                            } else {
+                              controller.offset.value = length;
+                              // controller.limit.value = value;
+                              await controller.searchShips();
+                            }
+                            print(limit);
+                            print(length);
+                            print(offset);
                           },
                         ),
                         Text(controller.limit.value.toString()),
