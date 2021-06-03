@@ -14,6 +14,8 @@ class SpaceXController extends GetxController {
   RxList<Ship> ships = RxList<Ship>.empty();
   RxMap<String, dynamic> search = RxMap({"name": ""});
   RxInt offset = RxInt(0);
+  RxInt size = RxInt(0);
+  // RxBool isMoreAvaialble = RxBool(true);
   RxString label = RxString("Search Something");
   Rx<ScrollController> scrollController = ScrollController().obs;
   @override
@@ -33,6 +35,8 @@ class SpaceXController extends GetxController {
         limit: limit.value.toInt(), offset: offset.value, search: search);
     // print(_data.toString());
     // isLoading.value = false;
+    size.value = _data.ships.length;
+    // if (_data.ships.isEmpty) isMoreAvaialble.value = false;
     ships.addAll(_data.ships);
     if (ships.isEmpty) label.value = "No result found...";
 

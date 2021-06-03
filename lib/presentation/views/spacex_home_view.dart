@@ -13,7 +13,10 @@ class SpaceXHomeView extends GetWidget<SpaceXController> {
     controller.scrollController.value.addListener(() async {
       if (controller.scrollController.value.position.pixels ==
           controller.scrollController.value.position.maxScrollExtent) {
-        controller.offset.value += 5;
+        if (controller.size.value!=0)
+          controller.offset.value +=controller.size.value;
+        else
+          controller.offset.value = controller.ships.length;
         await controller.searchShips();
       }
     });
