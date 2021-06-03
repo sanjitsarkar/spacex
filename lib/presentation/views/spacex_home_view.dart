@@ -166,12 +166,12 @@ class SpaceXHomeView extends GetWidget<SpaceXController> {
         constraints: BoxConstraints(),
         padding: EdgeInsets.zero,
         onPressed: () {
-          Get.bottomSheet(BottomSheet(
-            builder: (context) {
-              return Obx(() => bottomSheetBody(context));
-            },
-            onClosing: () {},
-          ));
+          // Get.bottomSheet(BottomSheet(
+          //   builder: (context) {
+          //     return Obx(() => bottomSheetBody(context));
+          //   },
+          //   onClosing: () {},
+          // ));
         },
         icon: Icon(Icons.filter_alt_sharp));
   }
