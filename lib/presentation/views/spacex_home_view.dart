@@ -52,7 +52,7 @@ class SpaceXHomeView extends GetWidget<SpaceXController> {
                     title: "Notice",
                     message: "Search something...",
                     duration: Duration(seconds: 2),
-                    animationDuration: Duration(milliseconds: 600),
+                    animationDuration: Duration(milliseconds: 500),
                     backgroundColor: Colors.blueGrey,
                     leftBarIndicatorColor: Colors.yellow,
                     boxShadows: [
