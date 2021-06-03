@@ -10,38 +10,76 @@ import 'package:spacex/shared/constants.dart';
 class SpaceXHomeView extends GetWidget<SpaceXController> {
   @override
   Widget build(BuildContext context) {
-    // controller.scrollController.value.addListener(() async {
-    //   if (controller.scrollController.value.position.pixels ==
-    //       controller.scrollController.value.position.maxScrollExtent) {
-    //     controller.offset.value += 5;
-    //     await controller.searchShips();
-    //   }
-    // });
+    controller.scrollController.value.addListener(() async {
+      if (controller.scrollController.value.position.pixels ==
+          controller.scrollController.value.position.maxScrollExtent) {
+        controller.offset.value += 5;
+        await controller.searchShips();
+      }
+    });
     return Scaffold(
         appBar: AppBar(
-          centerTitle: true,
-          title: Text("SpaceX"),
-        ),
+            centerTitle: true,
+            title: TextField(
+              controller: controller.searchName.value,
+              style: TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                  border: InputBorder.none,
+                  filled: true,
+                  suffixIcon: IconButton(
+                      onPressed: () => {},
+                      icon: Icon(
+                        Icons.search,
+                        color: Colors.white,
+                      )),
+                  fillColor: Colors.black12.withOpacity(.1),
+                  hintText: "Search By Name..",
+                  hintStyle: TextStyle(color: Colors.white.withOpacity(.5))),
+              onSubmitted: (value) async {
+                if (value != controller.search["name"]) {
+                  controller.ships.clear();
+                  controller.offset.value = 0;
+                  controller.search.value = {"name": value};
+                  await controller.searchShips();
+                }
+              },
+            )),
         drawer: Drawer(),
-        body: Obx(() => Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 20.0, vertical: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Ships",
-                        style: Theme.of(context).textTheme.subtitle1,
-                      ),
-                      filterButton()
-                    ],
-                  ),
+        body: Obx(() {
+          if (controller.isLoading.value) {
+            return Center(
+              child: SpinKitFadingCircle(
+                color: Colors.blueAccent,
+              ),
+            );
+          } else if (controller.ships.isEmpty) {
+            return Center(
+              child: Text(
+                controller.label.value,
+                style: Theme.of(context).textTheme.subtitle1,
+              ),
+            );
+          }
+          return Column(
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Ships",
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
+                    filterButton()
+                  ],
                 ),
-                customCard(),
-              ],
-            )));
+              ),
+              customCard(),
+            ],
+          );
+        }));
   }
 
   Expanded customCard() {
@@ -130,53 +168,144 @@ class SpaceXHomeView extends GetWidget<SpaceXController> {
         onPressed: () {
           Get.bottomSheet(BottomSheet(
             builder: (context) {
-              return Obx(() => Form(
-                      child: Container(
-                    height: h(context) * .7,
-                    width: w(context),
-                    child: Column(
-                      children: [
-                        Text(
-                          "Filter",
-                          style: Theme.of(context).textTheme.subtitle1,
-                        ),
-                        Slider(
-                          min: 5,
-                          max: 100,
-                          divisions: 5,
-                          label: "Limit",
-                          value: controller.limit.value,
-                          onChanged: (double value) async {
-                            controller.limit.value = value;
-                            double limit = controller.limit.value;
-                            int length = controller.ships.length;
-
-                            int offset = controller.offset.value;
-
-                            if (limit < length) {
-                              controller.ships
-                                  .removeRange(limit.toInt(), length);
-                            } else if (limit == length) {
-                              // controller.limit.value = value;
-                            } else {
-                              controller.offset.value = length;
-                              // controller.limit.value = value;
-                              await controller.searchShips();
-                            }
-                            print(limit);
-                            print(length);
-                            print(offset);
-                          },
-                        ),
-                        Text(controller.limit.value.toString()),
-                        Divider(),
-                      ],
-                    ),
-                  )));
+              return Obx(() => bottomSheetBody(context));
             },
             onClosing: () {},
           ));
         },
         icon: Icon(Icons.filter_alt_sharp));
+  }
+
+  SingleChildScrollView bottomSheetBody(BuildContext context) {
+    return SingleChildScrollView(
+      child: Form(
+          child: Container(
+        padding: EdgeInsets.all(30),
+        height: h(context) * .7,
+        width: w(context),
+        child: Column(
+          children: [
+            Text(
+              "Filter",
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+            Slider(
+              min: 5,
+              max: 100,
+              divisions: 19,
+              label: "Limit",
+              value: controller.limit.value,
+              onChanged: (double value) async {
+                controller.limit.value = value;
+              },
+            ),
+            Text(controller.limit.value.toString()),
+            Divider(),
+            TextField(
+              controller: controller.searchName.value,
+              decoration: InputDecoration(
+                  border: InputBorder.none,
+                  filled: true,
+                  fillColor: Colors.black12.withOpacity(.1),
+                  hintText: "Search By Name.."),
+              onSubmitted: (value) async {
+                // double limit = controller.limit.value;
+                // int length = controller.ships.length;
+
+                // int offset = controller.offset.value;
+                // // await controller.searchShips();
+                // // print(controller.search.toString());
+                // controller.offset.value = 0;
+                // if (limit < length &&
+                //     value == controller.search["name"]) {
+                //   controller.ships
+                //       .removeRange(limit.toInt(), length);
+                // } else if (limit < length) {
+                //   controller.search.value = {"name": value};
+
+                //   controller.ships.clear();
+                //   await controller.searchShips();
+                // } else if (limit == length &&
+                //     value == controller.search["name"]) {
+                //   // controller.limit.value = value;
+                // } else if (limit == length) {
+                //   controller.search.value = {"name": value};
+
+                //   controller.ships.clear();
+                //   await controller.searchShips();
+                // } else if (value == controller.search["name"]) {
+                //   controller.offset.value = length;
+                //   // controller.ships.clear();
+
+                //   await controller.searchShips();
+                // } else {
+                //   // controller.offset.value = length;
+                //   controller.ships.clear();
+                //   controller.search.value = {"name": value};
+                // }
+                await controller.searchShips();
+                Get.back();
+                // print(limit);
+                // print(length);
+                // print(offset);
+                // print(value);
+              },
+            ),
+            ElevatedButton.icon(
+                onPressed: () async {
+                  double limit = controller.limit.value;
+                  int length = controller.ships.length;
+
+                  int offset = controller.offset.value;
+                  // await controller.searchShips();
+                  // print(controller.search.toString());
+                  // controller.offset.value = 0;
+                  // if (limit < length &&
+                  //     controller.searchName.value.text ==
+                  //         controller.search["name"]) {
+                  //   controller.ships
+                  //       .removeRange(limit.toInt(), length);
+                  // } else if (limit < length) {
+                  //   controller.search.value = {
+                  //     "name": controller.searchName.value.text
+                  //   };
+
+                  //   controller.ships.clear();
+                  //   await controller.searchShips();
+                  // } else if (limit == length &&
+                  //     controller.searchName.value.text ==
+                  //         controller.search["name"]) {
+                  //   // controller.limit.value = value;
+                  // } else if (limit == length) {
+                  //   controller.search.value = {
+                  //     "name": controller.searchName.value.text
+                  //   };
+
+                  //   controller.ships.clear();
+                  //   await controller.searchShips();
+                  // } else if (controller.searchName.value.text ==
+                  //     controller.search["name"]) {
+                  //   controller.offset.value = length;
+                  //   // controller.ships.clear();
+
+                  //   await controller.searchShips();
+                  // } else {
+                  //   // controller.offset.value = length;
+                  //   controller.ships.clear();
+                  //   controller.search.value = {
+                  //     "name": controller.searchName.value.text
+                  //   };
+                  //   await controller.searchShips();
+                  // }
+                  await controller.searchShips();
+
+                  Get.back();
+                },
+                icon: Icon(Icons.search),
+                label: Text("Search"))
+          ],
+        ),
+      )),
+    );
   }
 }

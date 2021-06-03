@@ -7,26 +7,34 @@ import 'package:spacex/domain/entity/ship.dart';
 class SpaceXController extends GetxController {
   final ISpaceXRepository repository;
   SpaceXController({required this.repository});
-  RxDouble limit = RxDouble(10);
-  RxString name = RxString("");
+  RxDouble limit = RxDouble(5);
+  RxBool isLoading = RxBool(false);
+  Rx<TextEditingController> searchName =
+      Rx<TextEditingController>(TextEditingController(text: ""));
   RxList<Ship> ships = RxList<Ship>.empty();
+  RxMap<String, dynamic> search = RxMap({"name": ""});
   RxInt offset = RxInt(0);
+  RxString label = RxString("Search Something");
   Rx<ScrollController> scrollController = ScrollController().obs;
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
 
-    searchShips();
+    // searchShips();
   }
 
   Future searchShips() async {
     // data.value = Data(ships: []);
-    print("called");
+    isLoading.value = true;
+    searchName.value.text = search["name"];
+    // print("called");
+    print(ships.length);
     Data _data = await repository.searchShip(
-        limit: limit.value.toInt(), offset: offset.value);
+        limit: limit.value.toInt(), offset: offset.value, search: search);
     // print(_data.toString());
+    isLoading.value = false;
     ships.addAll(_data.ships);
+    if (ships.isEmpty) label.value = "No result found...";
 
     // append((val) => repository.searchShip(limit: 12));
   }
