@@ -25,14 +25,14 @@ class SpaceXController extends GetxController {
 
   Future searchShips() async {
     // data.value = Data(ships: []);
-    isLoading.value = true;
+    // isLoading.value = true;
     searchName.value.text = search["name"];
     // print("called");
     print(ships.length);
     Data _data = await repository.searchShip(
         limit: limit.value.toInt(), offset: offset.value, search: search);
     // print(_data.toString());
-    isLoading.value = false;
+    // isLoading.value = false;
     ships.addAll(_data.ships);
     if (ships.isEmpty) label.value = "No result found...";
 

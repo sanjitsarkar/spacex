@@ -40,7 +40,9 @@ class SpaceXHomeView extends GetWidget<SpaceXController> {
                   controller.ships.clear();
                   controller.offset.value = 0;
                   controller.search.value = {"name": value};
+                  controller.isLoading.value = true;
                   await controller.searchShips();
+                  controller.isLoading.value = false;
                 }
               },
             )),
