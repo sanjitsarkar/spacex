@@ -24,10 +24,10 @@ class SpaceXProvider extends GetConnect implements ISpaceXProvider {
   Future<GraphQLResponse<Data>> searchShip(
       {int? limit = 5, int? offset, Map<String, dynamic>? search}) async {
     dynamic name = search!["name"];
-    print(name);
-    print(limit);
+    // print(name);
     // print(limit);
-    print(offset);
+    // print(limit);
+    // print(offset);
     final response = await connect.query(
       """
       {

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:spacex/domain/entity/ship.dart';
-// import 'package:spacex/domain/entity/ships.dart';
 import 'package:spacex/presentation/controllers/spacex_controller.dart';
 import 'package:spacex/shared/constants.dart';
 
@@ -13,11 +12,12 @@ class SpaceXHomeView extends GetWidget<SpaceXController> {
     controller.scrollController.value.addListener(() async {
       if (controller.scrollController.value.position.pixels ==
           controller.scrollController.value.position.maxScrollExtent) {
-        if (controller.size.value!=0)
-          controller.offset.value +=controller.size.value;
-        else
+        if (controller.size.value != 0) {
+          controller.offset.value += controller.size.value;
+          await controller.searchShips();
+        } else
           controller.offset.value = controller.ships.length;
-        await controller.searchShips();
+        // print("reached");
       }
     });
     return Scaffold(
@@ -39,13 +39,34 @@ class SpaceXHomeView extends GetWidget<SpaceXController> {
                   hintText: "Search By Name..",
                   hintStyle: TextStyle(color: Colors.white.withOpacity(.5))),
               onSubmitted: (value) async {
-                if (value != controller.search["name"]) {
+                if (value != controller.search["name"] && value.isNotEmpty) {
                   controller.ships.clear();
                   controller.offset.value = 0;
                   controller.search.value = {"name": value};
                   controller.isLoading.value = true;
                   await controller.searchShips();
                   controller.isLoading.value = false;
+                } else {
+                  Get.showSnackbar(GetBar(
+                    barBlur: 20,
+                    title: "Notice",
+                    message: "Search something...",
+                    duration: Duration(seconds: 2),
+                    animationDuration: Duration(milliseconds: 600),
+                    backgroundColor: Colors.blueGrey,
+                    leftBarIndicatorColor: Colors.yellow,
+                    boxShadows: [
+                      BoxShadow(
+                          color: Colors.black12.withOpacity(.3), blurRadius: 5)
+                    ],
+                    dismissDirection: SnackDismissDirection.HORIZONTAL,
+                    overlayBlur: 10,
+                    snackPosition: SnackPosition.TOP,
+                    icon: Icon(
+                      Icons.notifications,
+                      color: Colors.yellow,
+                    ),
+                  ));
                 }
               },
             )),
@@ -81,22 +102,30 @@ class SpaceXHomeView extends GetWidget<SpaceXController> {
                   ],
                 ),
               ),
-              customCard(),
+              customCard(context: context),
             ],
           );
         }));
   }
 
-  Expanded customCard() {
+  Expanded customCard({required BuildContext context}) {
     return Expanded(
-      child: ListView.builder(
+      child: GridView.builder(
         controller: controller.scrollController.value,
         itemCount: controller.ships.length,
+        // shrinkWrap: true,
+
+        // primary: true,
         padding: EdgeInsets.all(20),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: o(context) == Orientation.portrait ? 1 : 2,
+            crossAxisSpacing: 20),
         itemBuilder: (BuildContext context, int i) {
           final Ship ship = controller.ships[i];
           return Container(
-            height: h(context) * .3,
+            height: o(context) == Orientation.portrait
+                ? h(context) * .3
+                : h(context) * .5,
             margin: EdgeInsets.only(bottom: 20),
             decoration: BoxDecoration(
                 color: Colors.white,
