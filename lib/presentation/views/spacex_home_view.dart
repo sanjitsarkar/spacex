@@ -57,7 +57,7 @@ class SpaceXHomeView extends GetWidget<SpaceXController> {
                     leftBarIndicatorColor: Colors.yellow,
                     boxShadows: [
                       BoxShadow(
-                          color: Colors.black12.withOpacity(.3), blurRadius: 5)
+                          color: Colors.black.withOpacity(.3), blurRadius: 5)
                     ],
                     dismissDirection: SnackDismissDirection.HORIZONTAL,
                     overlayBlur: 10,
